@@ -19,3 +19,7 @@ js
 *.o
 *.so
 *.rds
+data
+.RData
+.cproject
+Debug
