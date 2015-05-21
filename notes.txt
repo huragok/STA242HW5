@@ -1,0 +1,2 @@
+Check whether data and fare files match each other line-by-line
+how to sample a csv file in R
