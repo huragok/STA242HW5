@@ -19,7 +19,9 @@ js
 *.o
 *.so
 *.rds
-data
 .RData
 .cproject
 Debug
+*.csv
+*.zip
+*#
