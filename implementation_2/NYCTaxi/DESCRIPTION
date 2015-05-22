@@ -1,11 +1,15 @@
 Package: NYCTaxi
 Type: Package
-Title: What the package does (short line)
+Title: NYCTaxi: package to go analyze the New York City taxi data 
 Version: 1.0
 Date: 2015-05-21
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Wenhao Wu <wnhwu@ucdavis.edu>
+Maintainer: Wenhao Wu <wnhwu@ucdavis.edu>
+URL: https://bitbucket.org/shasqua/stat242_2015_assignment5/
+Description: Compute the deciles of the fare amount less the tolls. Fit a linear regression predictingfare amount less the tolls using trip time (and surcharge) as a predictor.
+License: GPL (>=3)
 LinkingTo: Rcpp
-Imports: Rcpp
+Imports: 
+  Rcpp,
+  hash,
+  Hmisc

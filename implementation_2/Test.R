@@ -29,7 +29,7 @@ tryCatch(
       #print(trip_time)
       #print(fares)
       
-      # FIXME: process data here
+      # process data here
       fare_less_toll <- fares[,1] - fares[,3]
 
       # Update the decile using a histogram (package "hash")
@@ -51,7 +51,7 @@ tryCatch(
   error=function(cond) {
     message("Appears to be at the end of file")
     message("Here's the original warning message:")
-    message(cond)
+    message(paste(cond, "\n"))
     return()
   },
   finally={

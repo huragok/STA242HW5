@@ -2,3 +2,4 @@ useDynLib(NYCTaxi)
 importFrom(Rcpp, sourceCpp)
 
 export(updateSuffStat)
+export(analyzeFile)
