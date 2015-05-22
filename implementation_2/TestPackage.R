@@ -19,3 +19,4 @@ coeff2 <- solve(sum$mat_reg2_XX_XY[, 1 : 3], sum$mat_reg2_XX_XY[, 4])
 deciles <- wtd.quantile(as.numeric(keys(sum$count_occurence)), weights = values(sum$count_occurence), probs=seq(0, 1, by=0.1))
 
 summaryRprof("analyzeFile.out")
+summaryRprof("analyzeFile.out", lines = "show")
