@@ -42,12 +42,17 @@ analyzeFile <- function(idx, path, size_bulk = 500000L, verbose = FALSE, verbose
   tryCatch(
     {
       while (TRUE) {
-        pickup_dropoff <- as.matrix(read.csv(connection_data, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE))
-        fares <- data.matrix(read.csv(connection_fare, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE))
+        pickup_dropoff <- read.csv(connection_data, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE)
+        fares <- read.csv(connection_fare, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE)
+        
+        # build a data frame and remove the rows with NAs
+        pickup_dropoff <- data.frame(lapply(pickup_dropoff, strptime, pattern_time))
+        fares <- data.frame(lapply(fares, as.numeric))
+        bulk <- na.omit(cbind(pickup_dropoff, fares))
         
         # process data here
-        trip_time <- difftime(strptime(pickup_dropoff[,2], pattern_time), strptime(pickup_dropoff[,1], pattern_time), units="secs")
-        fare_less_toll <- fares[,3] - fares[,2]
+        trip_time <- difftime(bulk[,2], bulk[,1], units="secs")
+        fare_less_toll <- bulk[,5] - bulk[,4]
         
         # Update the decile using a histogram (package "hash")
         hist_bulk <- table(fare_less_toll)
@@ -61,15 +66,15 @@ analyzeFile <- function(idx, path, size_bulk = 500000L, verbose = FALSE, verbose
         
         # Update the 2 matrices for regression
         mat_reg1_XX_XY <- updateSuffStat(mat_reg1_XX_XY, fare_less_toll, matrix(trip_time))
-        mat_reg2_XX_XY <- updateSuffStat(mat_reg2_XX_XY, fare_less_toll, cbind(trip_time, fares[,1]))
+        mat_reg2_XX_XY <- updateSuffStat(mat_reg2_XX_XY, fare_less_toll, cbind(trip_time, bulk[,3]))
       }
       
     },
     error=function(cond) {
       if (verbose_debug) {
         message("Appears to be at the end of file")
-        message("Here's the original warning message:")
-        message(paste(cond, "\n"))
+        message("Here's the original error message:")
+        message(paste(cond))
       }
       return()
     },

@@ -9,7 +9,7 @@ idx_file <- 9L
 size_bulk <- 500000L
 
 # Try to analyze a single file
-Rprof("analyzeFile.out")
+Rprof("analyzeFile.out", line.profiling=TRUE)
 sum <- analyzeFile(idx_file, path, size_bulk, TRUE, TRUE)
 Rprof(NULL)
 
