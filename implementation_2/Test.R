@@ -27,13 +27,15 @@ tryCatch(
   {
     while (TRUE) {
       pickup_dropoff <- read.csv(connection_data, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE)
-      fares <- data.frame(lapply(read.csv(connection_fare, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE), as.numeric))
-      bulk <- na.omit(cbind(pickup_dropoff, fares))
+      pickup_dropoff <- data.frame(lapply(pickup_dropoff, strptime, pattern_time))
+      fares <- read.csv(connection_fare, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE)
+      fares <- data.frame(lapply(fares, as.numeric))
+      bulk <- na.omit(cbind(pickup_dropoff, fares)) # Now it is more robust against unrecognized any field type or pattern
       #print(trip_time)
       #print(fares)
       
       # process data here
-      trip_time <- difftime(strptime(bulk[,2], pattern_time), strptime(bulk[,1], pattern_time),units="secs")
+      trip_time <- difftime(bulk[,2], bulk[,1], units="secs")
       fare_less_toll <- bulk[,3] - bulk[,5] # Get the fare less the toll
 
       # Update the decile using a histogram (package "hash")
