@@ -5,7 +5,7 @@ library(hash)
 library(Hmisc)
 
 idx_file <- 1L
-size_batch <- 50L
+size_batch <- 500000L
 cmd_parse_data <- paste("unzip -cq ../data/trip_data_", idx_file, ".csv.zip | cut -d , -f 6,7", sep = "")
 cmd_parse_fare <- paste("unzip -cq ../data/trip_fare_", idx_file, ".csv.zip | cut -d , -f 6,7,10", sep = "")
 

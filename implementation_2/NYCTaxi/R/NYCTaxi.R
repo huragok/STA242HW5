@@ -16,7 +16,7 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
     stop("Both files do not exist!")
   }
   
-  cmd_parse_data <- paste("unzip -cq ", filename_data, " | cut -d , -f 9", sep = "")
+  cmd_parse_data <- paste("unzip -cq ", filename_data, " | cut -d , -f 6,7", sep = "")
   cmd_parse_fare <- paste("unzip -cq ", filename_fare, " | cut -d , -f 7,10,11", sep = "")
   
   connection_data = pipe(cmd_parse_data, 'r') # open a connection to the file
@@ -24,6 +24,7 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
   readLines(connection_data, 1, skipNul = TRUE) # Skip the header line
   readLines(connection_fare, 1, skipNul = TRUE)
   
+  pattern_time <- "%Y-%m-%d %H:%M:%OS" # The pattern of the pickup and dropoff time
   hist <- hash() # The hash table to record the occurence of each fare less toll
   
   # The matrix to be updated iteratively based on bulks of records, the 2-by-2 (3-by-3) matrix X^HX and the 2-by-1 (3-by-1) vector X^HY, which is concatenated into a single 2-by-3 (3-by-4) matrix
@@ -34,10 +35,11 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
   tryCatch(
     {
       while (TRUE) {
-        trip_time <- unlist(read.csv(connection_data, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE), use.names = FALSE)
+        pickup_dropoff <- as.matrix(read.csv(connection_data, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE))
         fares <- data.matrix(read.csv(connection_fare, nrow=size_bulk, header=FALSE, stringsAsFactors=FALSE))
         
         # process data here
+        trip_time <- difftime(strptime(pickup_dropoff[,2], pattern_time), strptime(pickup_dropoff[,1], pattern_time), units="secs")
         fare_less_toll <- fares[,3] - fares[,2]
         
         # Update the decile using a histogram (package "hash")

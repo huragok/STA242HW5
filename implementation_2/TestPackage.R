@@ -10,7 +10,7 @@ size_bulk <- 500000L
 
 # Try to analyze a single file
 Rprof("analyzeFile.out")
-sum <- analyzeFile(path, idx_file, size_bulk)
+sum <- analyzeFile(path, idx_file, size_bulk, TRUE)
 Rprof(NULL)
 
 coeff1 <- solve(sum$mat_reg1_XX_XY[, 1 : 2], sum$mat_reg1_XX_XY[, 3])
