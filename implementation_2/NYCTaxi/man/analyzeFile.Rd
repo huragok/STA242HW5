@@ -4,16 +4,19 @@
 \alias{analyzeFile}
 \title{The function to analyze a single pair of files}
 \usage{
-analyzeFile(path, idx, size_bulk = 500000L, verbose = FALSE)
+analyzeFile(idx, path, size_bulk = 500000L, verbose = FALSE,
+  verbose_debug = FALSE)
 }
 \arguments{
-\item{path}{the path of the directory holding the data and fare files}
-
 \item{idx}{the index of the file, ranging from 1 to 12}
+
+\item{path}{the path of the directory holding the data and fare files}
 
 \item{size_bulk}{the size of each bulk to process, limited by memory size}
 
-\item{verbose}{whether to print the error message when reaching the end of file (or potentially other error message)}
+\item{verbose}{whether to prompt an information when the processing is done}
+
+\item{verbose_debug}{whether to print the error message when reaching the end of file (or potentially other error message)}
 }
 \value{
 a SummaryNYCTaxi S3 class object

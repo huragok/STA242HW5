@@ -3,3 +3,4 @@ importFrom(Rcpp, sourceCpp)
 
 export(updateSuffStat)
 export(analyzeFile)
+export(reduceListSummaryNYCTaxi)
