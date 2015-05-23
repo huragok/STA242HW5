@@ -2,12 +2,17 @@
 #' 
 #' Return a SummaryNYCTaxi S3 class object summarizing one pair of data and fare file, which contains the count of occurence for each value of fare amount less the tolls, and the sufficient statistics for the 2 regression tasks
 #' 
-#' @param path the path of the directory holding the data and fare files
 #' @param idx the index of the file, ranging from 1 to 12
+#' @param path the path of the directory holding the data and fare files
 #' @param size_bulk the size of each bulk to process, limited by memory size
-#' @param verbose whether to print the error message when reaching the end of file (or potentially other error message)
+#' @param verbose whether to prompt an information when the processing is done
+#' @param verbose_debug whether to print the error message when reaching the end of file (or potentially other error message)
 #' @return a SummaryNYCTaxi S3 class object
-analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
+analyzeFile <- function(idx, path, size_bulk = 500000L, verbose = FALSE, verbose_debug = FALSE) {
+  if (verbose) {
+    message(paste("Processing data/fare", idx, "..."))
+  }
+  
   # Check whether the files exist
   filename_data <- paste(path, "/", "trip_data_", idx, ".csv.zip", sep = "")
   filename_fare <- paste(path, "/", "trip_fare_", idx, ".csv.zip", sep = "")
@@ -46,10 +51,10 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
         hist_bulk <- table(fare_less_toll)
         value <- names(hist_bulk)
         count <- as.vector(hist_bulk)
-        for (idx in seq_along(hist_bulk)) {
-          key <- value[idx]
+        for (i in seq_along(hist_bulk)) {
+          key <- value[i]
           (has.key(key, hist)) || (hist[[key]] <- 0)
-          hist[[key]] <- hist[[key]] + count[idx]
+          hist[[key]] <- hist[[key]] + count[i]
         }
         
         # Update the 2 matrices for regression
@@ -59,7 +64,7 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
       
     },
     error=function(cond) {
-      if (verbose) {
+      if (verbose_debug) {
         message("Appears to be at the end of file")
         message("Here's the original warning message:")
         message(paste(cond, "\n"))
@@ -71,6 +76,10 @@ analyzeFile <- function(path, idx, size_bulk = 500000L, verbose = FALSE) {
       close(connection_fare)
     }
   )
+  
+  if (verbose) {
+    message(paste("Processing data/fare", idx, "completed!"))
+  }
   
   summary_NYCTaxi <- structure(list(count_occurence = hist, mat_reg1_XX_XY = mat_reg1_XX_XY, mat_reg2_XX_XY = mat_reg2_XX_XY), class = "SummaryNYCTaxi")
   return(summary_NYCTaxi)
