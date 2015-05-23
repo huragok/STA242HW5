@@ -2,6 +2,8 @@
 #define NYCTAXI
 
 #include <Rcpp.h>
+#include <string>
+
 using namespace Rcpp;
 
 //' Function to update the sufficient statistics of linear regression based on a bulk of data
