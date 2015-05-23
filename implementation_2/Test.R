@@ -23,17 +23,18 @@ mat_reg1_XX_XY <- matrix(0, nrow = 2, ncol = 3) # Fare amount less the tolls vs 
 mat_reg2_XX_XY <- matrix(0, nrow = 3, ncol = 4) # Fare amount less the tolls vs trip time and surcharge
 
 Rprof("ProfNYCTaxiOriginal.out", line.profiling=TRUE) # Profiling the program
-#tryCatch(
-#  {
-#    while (TRUE) {
-      pickup_dropoff <- as.matrix(read.csv(connection_data, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE))
-      fares <- data.matrix(read.csv(connection_fare, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE))
+tryCatch(
+  {
+    while (TRUE) {
+      pickup_dropoff <- read.csv(connection_data, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE)
+      fares <- data.frame(lapply(read.csv(connection_fare, nrow=size_batch, header=FALSE, stringsAsFactors=FALSE), as.numeric))
+      bulk <- na.omit(cbind(pickup_dropoff, fares))
       #print(trip_time)
       #print(fares)
       
       # process data here
-      trip_time <- difftime(strptime(pickup_dropoff[,2], pattern_time), strptime(pickup_dropoff[,1], pattern_time),units="secs")
-      fare_less_toll <- fares[,1] - fares[,3] # Get the fare less the toll
+      trip_time <- difftime(strptime(bulk[,2], pattern_time), strptime(bulk[,1], pattern_time),units="secs")
+      fare_less_toll <- bulk[,3] - bulk[,5] # Get the fare less the toll
 
       # Update the decile using a histogram (package "hash")
       hist_bulk <- table(fare_less_toll)
@@ -48,21 +49,21 @@ Rprof("ProfNYCTaxiOriginal.out", line.profiling=TRUE) # Profiling the program
       
       # Update the 2 matrices for regression
       mat_reg1_XX_XY <- updateSuffStat(mat_reg1_XX_XY, fare_less_toll, matrix(trip_time))
-      mat_reg2_XX_XY <- updateSuffStat(mat_reg2_XX_XY, fare_less_toll, cbind(trip_time, fares[,2]))
-#    }
+      mat_reg2_XX_XY <- updateSuffStat(mat_reg2_XX_XY, fare_less_toll, cbind(trip_time, bulk[,4]))
+    }
     
-#  },
-#   error=function(cond) {
-#     message("Appears to be at the end of file")
-#     message("Here's the original warning message:")
-#     message(paste(cond, "\n"))
-#     return()
-#   },
-#   finally={
-#     close(connection_data)
-#     close(connection_fare)
-#   }
-# )
+  },
+   error=function(cond) {
+     message("Appears to be at the end of file")
+     message("Here's the original warning message:")
+     message(paste(cond, "\n"))
+     return()
+   },
+   finally={
+     close(connection_data)
+     close(connection_fare)
+   }
+ )
 Rprof(NULL)
 coeff1 <- solve(mat_reg1_XX_XY[, 1 : 2], mat_reg1_XX_XY[, 3])
 coeff2 <- solve(mat_reg2_XX_XY[, 1 : 3], mat_reg2_XX_XY[, 4])

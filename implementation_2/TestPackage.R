@@ -5,7 +5,7 @@ library(hash)
 library(Hmisc)
 
 path <- "../data"
-idx_file <- 1L
+idx_file <- 9L
 size_bulk <- 500000L
 
 # Try to analyze a single file
