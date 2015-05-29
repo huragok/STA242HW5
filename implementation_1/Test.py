@@ -75,7 +75,7 @@ def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file):
     return
 
 if __name__ == "__main__":
-    idx_file = 1
+    idx_file = 8
     path = "../data"
     mat_reg1_XX_XY = np.zeros((2, 3))
     mat_reg2_XX_XY = np.zeros((3, 4))
