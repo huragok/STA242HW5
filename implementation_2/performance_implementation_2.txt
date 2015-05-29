@@ -1,0 +1,35 @@
+$deciles
+       0%       10%       20%       30%       40%       50%       60%       70% 
+ -1430.00      6.00      7.50      8.50      9.88     11.00     13.00     15.00 
+      80%       90%      100% 
+    18.50     26.30 685908.10 
+
+$coeff_triptime
+[1]  0.002128158 12.959314582
+
+$coeff_triptime_surcharge
+[1]  0.002129186  0.223714254 12.887126597
+
+$deciles
+       0%       10%       20%       30%       40%       50%       60%       70% 
+ -1430.00      6.00      7.50      8.50      9.88     11.00     13.00     15.00 
+      80%       90%      100% 
+    18.50     26.30 685908.10 
+
+$coeff_triptime
+[1]  0.002128158 12.959314582
+
+$coeff_triptime_surcharge
+[1]  0.002129186  0.223714254 12.887126597
+
+Warning messages:
+1: In lapply(fares, as.numeric) : NAs introduced by coercion
+2: In lapply(fares, as.numeric) : NAs introduced by coercion
+3: In lapply(fares, as.numeric) : NAs introduced by coercion
+> t_serial
+    user   system  elapsed 
+1688.761  186.597 1376.170 
+> t_parallel
+   user  system elapsed 
+  0.061   0.000 557.088 
+
