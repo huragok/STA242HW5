@@ -87,29 +87,48 @@ def analyze_file(arg_list):
     # Hook everything up
     parse_file(idx_file, path, accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file, verbose))
 
-    # Compute the deciles
-    count_fare = Series({key: count_fare[key] for key in sorted(count_fare)})
-    cdf = np.cumsum(count_fare) / np.sum(count_fare)
-    deciles = [cdf[cdf >= p].index[0] for p in np.arange(0, 1.05, 0.1)]
-
-    # Solve the regressions
-    coeff1 = np.linalg.solve(mat_reg1_XX_XY[:, 0:2], mat_reg1_XX_XY[:, 2])
-    coeff2 = np.linalg.solve(mat_reg2_XX_XY[:, 0:3], mat_reg2_XX_XY[:, 3])
-   
-    return([deciles, coeff1, coeff2])
+    # Return a pandas Series
+    count_fare = Series(count_fare)
+     
+    return([count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY])
 
 
 if __name__ == "__main__":
     idx_file = 1
     path = "../data"
-    n_process = 2
+    idxs_file = range(1, 5)
+    n_file = len(idxs_file)
+    n_process = 4
     
-    arg_lists = list(zip(range(1, 5), [path] * 4, [True] * 4))
+    arg_lists = list(zip(idxs_file, [path] * n_file, [True] * n_file))
+    
     start_time = time.time()
-    pool = Pool(processes = n_process)
-    results = pool.map(analyze_file, arg_lists)
+    with Pool(processes = n_process) as pool:
+        results = pool.map(analyze_file, arg_lists)
+        
+        # Reduce the results
+        count_fare = Series()
+        mat_reg1_XX_XY = np.zeros((2, 3))
+        mat_reg2_XX_XY = np.zeros((3, 4))
+        for result in results:
+            count_fare = count_fare.add(result[0], fill_value = 0)
+            mat_reg1_XX_XY += result[1]
+            mat_reg2_XX_XY += result[2]
+        
+        # Compute the deciles    
+        cdf = np.cumsum(count_fare) / np.sum(count_fare)
+        deciles = [cdf[cdf >= p].index[0] for p in np.arange(0, 1.05, 0.1)]
+        
+        # Solve the regressions
+        coeff1 = np.linalg.solve(mat_reg1_XX_XY[:, 0:2], mat_reg1_XX_XY[:, 2])
+        coeff2 = np.linalg.solve(mat_reg2_XX_XY[:, 0:3], mat_reg2_XX_XY[:, 3])
+        
+        print("Deciles of the total amount less toll:")
+        print(deciles)
+        print("Linear model of the total amount less the tolls versus trip time:")
+        print(coeff1)
+        print("Linear model of the total amount less the tolls versus surcharge and trip time:")
+        print(coeff2)
+        print("--- %s seconds ---" % (time.time() - start_time))
+
     
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
-    print(jobs[0].result)
-    print(jobs[1].result)
