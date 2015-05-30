@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from pandas import Series
 import time
+import dispy
 
 def coroutine(func):
     def start(*args,**kwargs):
@@ -39,7 +40,7 @@ def parse_file(idx_file, path, accumulator):
     return
        
 @coroutine     
-def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file):
+def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file, verbose):
     try:
         while True:
             time_fares = (yield)
@@ -71,32 +72,48 @@ def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file):
         mat_reg2_XX_XY[2, 0] = mat_reg2_XX_XY[0, 2]
         mat_reg2_XX_XY[2, 1] = mat_reg2_XX_XY[1, 2]
         
-        print("Processing data/fare {0} completed!".format(idx_file))
+        if (verbose):
+            print("Processing data/fare {0} completed!".format(idx_file))
     return
 
-if __name__ == "__main__":
-    idx_file = 8
-    path = "../data"
+def analyze_file(idx_file, path, verbose = False):
     mat_reg1_XX_XY = np.zeros((2, 3))
     mat_reg2_XX_XY = np.zeros((3, 4))
     count_fare = dict()
 
-    start_time = time.time()
-
     # Hook everything up
-    parse_file(idx_file, path, accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file))
+    parse_file(idx_file, path, accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file, verbose))
 
     # Compute the deciles
     count_fare = Series({key: count_fare[key] for key in sorted(count_fare)})
     cdf = np.cumsum(count_fare) / np.sum(count_fare)
     deciles = [cdf[cdf >= p].index[0] for p in np.arange(0, 1.05, 0.1)]
-    print(deciles)
 
     # Solve the regressions
     coeff1 = np.linalg.solve(mat_reg1_XX_XY[:, 0:2], mat_reg1_XX_XY[:, 2])
     coeff2 = np.linalg.solve(mat_reg2_XX_XY[:, 0:3], mat_reg2_XX_XY[:, 3])
-    
-    print(coeff1)
-    print(coeff2)
+   
+    return([deciles, coeff1, coeff2])
 
-print("--- %s seconds ---" % (time.time() - start_time))
+
+if __name__ == "__main__":
+    idx_file = 1
+    path = "../data"
+    
+    start_time = time.time()
+    cluster = dispy.JobCluster(analyze_file)
+    jobs = []
+    for idx_file in range(2):
+        job = cluster.submit(idx_file, path)
+        if job is None:
+            print("creating job {0} failed!".format(idx_file))
+            continue
+        job.id = idx_file
+        jobs.append(job)
+    cluster.wait()
+    cluster.stats()
+    cluster.close()
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
+    print(jobs[0].result)
+    print(jobs[1].result)
