@@ -38,7 +38,7 @@
 \usepackage{xcolor}
 \usepackage[letterpaper, margin=1in]{geometry}
 \lstset{
-    numbers=left,
+    %numbers=left,
     stepnumber=1,    
     firstnumber=1,
     numberfirstline=true,
@@ -74,11 +74,80 @@
 \section{Algorithm Design}
 
 \subsection{Compute the Deciles}
+In order to compute the deciles of the total fare less the tolls, denoted as
+$f_{net}$, we count the occurence of each value of $f_{net}$. The benefits are:
+\begin{itemize}
+    \item There are much more records than the possible values of $f_{net}$ in
+    the original data. Consequently, it \textbf{saves tremendous memory usage}
+    by counting the occurence.
+    \item This algorithm is highly \textbf{compatible with parallel processing}.
+    We can keep multiple tables to count the occurence of each value of
+    $f_{net}$ for different data files, update these tables fully in parallel, and
+    then merge these tables to compute the deciles.
+\end{itemize}
+In both of our implementations, we build a table to count the occurence for
+each pair of data files by updating it seqentially as we read in a new
+piece/bulk of record(s), then combine the 12 tables to compute the deciles.
 
 \subsection{Solve The Linear Regression}
+Denote the trip time as $t$ and the surcharge as $f_s$, respectively. In the two
+regression tasks, the responses are denoted as $\mathbf{y}$, a $n$-by-1 vector
+of $f_{net}$ in all records. In the first regresssion tasks, the predictors are
+denoted as $\mathbf{X}_1$, a $n$-by-2 matrix where the first column represents
+the $t$ from all records and the second column is an all 1 vector. In the second
+regresssion tasks, the predictors are denoted as $\mathbf{X}_2$, a $n$-by-3
+matrix where the first and the second columns represent the $t$, and $f_s$ from
+all records and the third column is an all 1 vector. Theoretically, the
+coefficients of the linear model can be computed as
+\begin{align}
+    \bm{\beta}_i =
+    (\mathbf{X}_i^H\mathbf{X}_i)^{-1}\mathbf{X}_i^H\mathbf{y},\;i=1,2.
+    \label{eq:lm}
+\end{align}
+Apparently, the sufficient statistic for the linear regression tasks are
+$\mathbf{X}_i^H\mathbf{X}_i$ and $\mathbf{X}_i^H\mathbf{y}$, $i=1,2$ which has
+very low dimension. Moreover, these sufficient statistics can be updated
+sequentially as we read in a new piece/bulk of record(s), and are again highly
+compatible with parallel processing.
+
+In both of our implementations,  we update $\mathbf{X}_i^H\mathbf{X}_i$ and
+$\mathbf{X}_i^H\mathbf{y}$, $i=1,2$ sequentially for each pair of data files,
+then combine the 12 set of statistics by summing them up and solve the linear
+problem as in~(\ref{eq:lm}) to get the coefficients for the regression models.
 
 \section{Data Inspection, Pre-Processing and Extraction}
+Due to the limited hard drive space available on my workstation, I keep the
+original .zip files without decompressing them. Firstly we check that the
+``data'' and ``fare'' files match each other row by row in the 3 index
+fields ``medallion'', `` hack\_license'' and `` pickup\_datetime''. To do so, we
+primarily make use of a combination of shell commands \texttt{unzip},
+\texttt{cut}, \texttt{diff} , IO redirection and pipe commands to compare the 3
+fields in each pair of files. (See \textbf{checkmatch.sh} in the Appendices.) We
+verified that the files indeed match in pairs.
 
+During the inspection, we also notice that ``trip\_fare\_8.csv.zip'',
+``trip\_data\_9.csv.zip'' and ``trip\_fare\_9.csv.zip'' contains duplicated .csv
+files, whcih are removed manually.
+
+In both of our implementations, we build a ``connection'' to read in the output
+of shell pipe commands to extract the data. The shell command to extract
+`` surcharge'', ``tolls\_amount'' and ``total\_amount'' from the ``fare'' files
+is
+\begin{lstlisting}[language=sh]
+    unzip -cq ../data/trip_fare_n.csv.zip | cut -d , -f 7,10,11
+\end{lstlisting}
+
+According to the data file description~\cite{}, roughly 7.5\% of all
+trips' ``trip\_time'' is wrong so we take a safe approach to extract
+``pickup\_datetime'' and ``dropoff\_datetime'' from the ``data'' files. The
+corresponding shell command is
+\begin{lstlisting}[language=sh]
+    unzip -cq ../data/trip_data_n.csv.zip | cut -d , -f 6,7
+\end{lstlisting}
+
+Later we take the differences between them as the actual trip time. Fortunately,
+both these two fields have a very neat format as ``\%Y-\%m-\%d \%H:\%M:\%S''
+which can be easily processed.
 \section{Implementation in Python}
 
 \section{Implementation in R}
