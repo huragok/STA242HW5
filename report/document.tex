@@ -1,0 +1,117 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.0 (4/2/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} command for typesetting SI units
+\usepackage{hyperref}
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{bm}
+\usepackage{multirow}% http://ctan.org/pkg/multirow
+\usepackage{hhline}% http://ctan.org/pkg/hhline
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[letterpaper, margin=1in]{geometry}
+\lstset{
+    numbers=left,
+    stepnumber=1,    
+    firstnumber=1,
+    numberfirstline=true,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    breaklines=true,
+}
+
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate
+% environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{UC Davis STA 242 2015 Spring Assignment 5~\cite{wu2015NYCTaxi}} %
+% Title
+\author{Wenhao \textsc{Wu}, 998587583} % Author name
+\date{\today} % Date for the report
+
+\begin{document}
+\maketitle % Insert the title, author and date
+
+% If you wish to include an abstract, uncomment the lines below
+
+\section{Algorithm Design}
+
+\subsection{Compute the Deciles}
+
+\subsection{Solve The Linear Regression}
+
+\section{Data Inspection, Pre-Processing and Extraction}
+
+\section{Implementation in Python}
+
+\section{Implementation in R}
+
+\section{Results}
+
+\subsection{Deciles and Regression Results}
+
+\subsection{Running Time Comparison}
+
+\section{Conclusion}
+
+
+%   BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliographystyle{unsrt}
+\bibliography{myrefs}
+
+%\pagebreak
+
+
+\pagebreak
+\section*{Appendix: Source Files}
+%\subsection*{\texttt{BMLGrid.R}}
+%\lstinputlisting[language=R]{../BMLGrid/R/BMLGrid.R}
+%\subsection*{\texttt{BMLGrid.h}}
+%\lstinputlisting[language=C++]{../BMLGrid/src/BMLGrid.h}
+%\subsection*{\texttt{BMLGrid.cpp}}
+%\lstinputlisting[language=C++]{../BMLGrid/src/BMLGrid.cpp}
+
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}

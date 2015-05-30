@@ -31,7 +31,7 @@ def parse_file(idx_file, path, accumulator):
         
             trip_time = datetime.strptime(pickup_dropoff[1], format_time) - datetime.strptime(pickup_dropoff[0], format_time)
             fares = [float(fare) for fare in fares_str]
-            #print((trip_time.total_seconds(), fares))
+            
             accumulator.send((trip_time.total_seconds(), fares[2] - fares[1], fares[0]))
         except:
             continue
