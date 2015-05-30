@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from pandas import Series
 import time
-import dispy
+from multiprocessing import Pool
 
 def coroutine(func):
     def start(*args,**kwargs):
@@ -76,7 +76,10 @@ def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file, verbo
             print("Processing data/fare {0} completed!".format(idx_file))
     return
 
-def analyze_file(idx_file, path, verbose = False):
+def analyze_file(arg_list):
+    idx_file = arg_list[0]
+    path = arg_list[1]
+    verbose = arg_list[2]
     mat_reg1_XX_XY = np.zeros((2, 3))
     mat_reg2_XX_XY = np.zeros((3, 4))
     count_fare = dict()
@@ -99,20 +102,13 @@ def analyze_file(idx_file, path, verbose = False):
 if __name__ == "__main__":
     idx_file = 1
     path = "../data"
+    n_process = 2
     
+    arg_lists = list(zip(range(1, 5), [path] * 4, [True] * 4))
     start_time = time.time()
-    cluster = dispy.JobCluster(analyze_file)
-    jobs = []
-    for idx_file in range(2):
-        job = cluster.submit(idx_file, path)
-        if job is None:
-            print("creating job {0} failed!".format(idx_file))
-            continue
-        job.id = idx_file
-        jobs.append(job)
-    cluster.wait()
-    cluster.stats()
-    cluster.close()
+    pool = Pool(processes = n_process)
+    results = pool.map(analyze_file, arg_lists)
+    
     print("--- %s seconds ---" % (time.time() - start_time))
     
     print(jobs[0].result)
