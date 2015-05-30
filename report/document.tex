@@ -148,7 +148,29 @@ corresponding shell command is
 Later we take the differences between them as the actual trip time. Fortunately,
 both these two fields have a very neat format as ``\%Y-\%m-\%d \%H:\%M:\%S''
 which can be easily processed.
+
 \section{Implementation in Python}
+Our first implementation is based on Python3. The pararllel processing is
+implemented with package ``multiprocessing'': we define a worker function
+\texttt{analyze\_file()} to compute the count of occurence table and the
+sufficient statistics for the two linear regression tasks for a single pair of
+data/fair files. A total of 12 copies of this worker function are mapped to a
+pool of multiple processes and run in parallel. The results are then combined,
+from which the deciles are computed and the 2 linear regression problems are
+solved. 
+
+The worker function \texttt{analyze\_file()} has a coroutine
+structure~\cite{}: it is mainly composed of a ``source'' function
+\texttt{parse\_file()} which read in one line from a pair of data/fare files,
+process it, and send the result to a ``sink'' function
+\texttt{accumulate\_lines()}, which is in charge of updating the count of
+occurence table for the total amount less the toll and the sufficient statistics
+for the regressions.
+
+In terms of data structure, the count of occurence table is updated as a python
+\texttt{dict} object and later converted to a pandas \texttt{Series} object to
+enable easy combination. The suffficient statistics are represented as numpy
+\texttt{ndarray} objects.
 
 \section{Implementation in R}
 
