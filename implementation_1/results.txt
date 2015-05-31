@@ -7,4 +7,67 @@ Linear model of the total amount less the tolls versus surcharge and trip time:
 [  2.02196225e-03   3.04104587e-01   1.29153642e+01]
 --- 2036.9713716506958 seconds ---
 
+n_process = 1
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 3861.0596289634705 seconds ---
+
+n_process = 3
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1715.227736711502 seconds ---
+
+n_process = 4
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1508.038311958313 seconds ---
+
+n_process = 5
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1247.24587392807 seconds ---
+
+n_process = 6
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1148.039757490158 seconds ---
+
+n_process = 7
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1189.4917171001434 seconds ---
+
+n_process = 8
+Deciles of the total amount less toll:
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 1206.323172569275 seconds ---
+
 

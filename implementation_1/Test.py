@@ -100,7 +100,7 @@ if __name__ == "__main__":
     path = "../data"
     idxs_file = range(1, 13)
     n_file = len(idxs_file)
-    n_process = 2
+    n_process = 8
     
     arg_lists = list(zip(idxs_file, [path] * n_file, [True] * n_file))
     
