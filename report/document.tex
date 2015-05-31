@@ -173,6 +173,28 @@ enable easy combination. The suffficient statistics are represented as numpy
 \texttt{ndarray} objects.
 
 \section{Implementation in R}
+Our second implementation is based on R. Similar to our first implementation,
+we define a worker function \texttt{analyzeFile()} to compute the count of
+occurence table and the sufficient statistics for the two linear regression
+tasks for a single pair of data/fair files, then use \texttt{parLapply()} to run
+it on a ``cluster'' for different files. After the 12 pairs of fare/data files
+are all processed. The results are then combined with function
+\texttt{reduceListSummaryNYCTaxi()} where the deciles are computed and the 2
+linear regression problems are solved.
+
+In the worker function \texttt{analyzeFile()}, instead of reading in 1 line from
+a pair of fare/data files at a time as in our first implementation, we use
+function \texttt{read.csv()} to read in a bulk of records as a data frame, and
+then update the count of occurence table and the sufficient statistics for
+regression. The benefits are two-fold. Firstly, we can use R's function
+\texttt{table()} to count the occurence for this bulk of record and then update
+the overall count of occurence table implemented with package ``hash'', which
+prove to be more efficient than updating the table directly one line at a time.
+Secondly, this bulk-style update would result in more accuracy in computing the
+sufficient statistics theoretically.
+
+In order to further speed up function \texttt{analyzeFile()}, we implement the
+function to update the sufficient statistics, \texttt{updateSuffStat()}, in C++.
 
 \section{Results}
 
