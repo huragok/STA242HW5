@@ -198,9 +198,58 @@ function to update the sufficient statistics, \texttt{updateSuffStat()}, in C++.
 
 \section{Results}
 
-\subsection{Deciles and Regression Results}
+\subsection{Deciles and Linear Regression Results}
+The deciles and the two linear regression results computed using our Python and
+R implementation are presented in Table~\ref{tab:decile} and Table~\ref{tab:lm},
+respectively. As we can see, the results of the two implementaions are exactly
+the same.
+
+\begin{table}[!t]
+    \renewcommand{\arraystretch}{1.3}
+    \caption{Deciles of the total fare less the tolls}
+    \label{tab:decile}
+    \centering
+    \begin{tabular}{c|ccccccccccc}
+        \hline
+         & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\
+        \hline
+        Pyhthon & & & & & & & & & & & \\
+        R & & & & & & & & & & & \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[!t]
+    \renewcommand{\arraystretch}{1.3}
+    \caption{Linear regression results}
+    \label{tab:lm}
+    \centering
+    \begin{tabular}{c|cc|ccc}
+        \hline
+        \multirow{2}{*}{} & \multicolumn{2}{c|}{Linear model 1} &
+        \multicolumn{3}{c}{Linear model 2} \\
+        \hhline{~-----} & trip time & intercept & trip time & surcharge &
+        intercept \\
+        \hline
+        Python & & & & & \\
+        R & & & & & \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \subsection{Running Time Comparison}
+We test the running time of both of our implementations using different number
+of processes. In there tests, we use a Dell Precision T1700 workstation equipped
+with 16GB DDR3 RAM, a Core i7-4790K CPU and a Samsung 850 PRO SSD in Ubuntu
+14.04 OS. The running time are plotted in Fig.~\ref{fig:running_time}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=2.5in]{figs/TestVelocity.pdf}
+    \caption{The evolution of average velocity of the blue cars.}
+    \label{fig:average_velocity}
+\end{figure}
+
 
 \section{Conclusion}
 
