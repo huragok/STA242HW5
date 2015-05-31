@@ -97,14 +97,14 @@ def analyze_file(arg_list):
 
 
 if __name__ == "__main__":
-    idx_file = 1
     path = "../data"
-    idxs_file = range(1, 5)
+    idxs_file = range(1, 13)
     n_file = len(idxs_file)
-    n_process = 4
+    n_process = 2
     
     arg_lists = list(zip(idxs_file, [path] * n_file, [True] * n_file))
     
+    # Parallel run
     start_time = time.time()
     with Pool(processes = n_process) as pool:
         results = pool.map(analyze_file, arg_lists)
@@ -133,5 +133,4 @@ if __name__ == "__main__":
         print("Linear model of the total amount less the tolls versus surcharge and trip time:")
         print(coeff2)
         print("--- %s seconds ---" % (time.time() - start_time))
-
     

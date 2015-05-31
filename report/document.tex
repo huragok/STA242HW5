@@ -36,7 +36,7 @@
 \usepackage{subcaption}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage[letterpaper, margin=0.7in]{geometry}
 \lstset{
     %numbers=left,
     stepnumber=1,    
@@ -184,8 +184,8 @@ linear regression problems are solved.
 
 In the worker function \texttt{analyzeFile()}, instead of reading in 1 line from
 a pair of fare/data files at a time as in our first implementation, we use
-function \texttt{read.csv()} to read in a bulk of records as a data frame, and
-then update the count of occurence table and the sufficient statistics for
+function \texttt{read.csv()} to read in a bulk of 500000 records as a data
+frame, and then update the count of occurence table and the sufficient statistics for
 regression. The benefits are two-fold. Firstly, we can use R's function
 \texttt{table()} to count the occurence for this bulk of record and then update
 the overall count of occurence table implemented with package ``hash'', which
@@ -201,8 +201,9 @@ function to update the sufficient statistics, \texttt{updateSuffStat()}, in C++.
 \subsection{Deciles and Linear Regression Results}
 The deciles and the two linear regression results computed using our Python and
 R implementation are presented in Table~\ref{tab:decile} and Table~\ref{tab:lm},
-respectively. As we can see, the results of the two implementaions are exactly
-the same.
+respectively. As we can see, the results of the two implementaions are very
+close to each other. The difference is likely due to numerical accuracy issues.
+We believe that the R implementation is more precise.
 
 \begin{table}[!t]
     \renewcommand{\arraystretch}{1.3}
@@ -212,9 +213,11 @@ the same.
     \begin{tabular}{c|ccccccccccc}
         \hline
          & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\
-        \hline
-        Pyhthon & & & & & & & & & & & \\
-        R & & & & & & & & & & & \\
+         \hline
+        Pyhthon & -1430.0 & 6.0 & 7.5 & 8.5 & 9.75 & 11.0 & 13.0 & 15.0 & 18.5 &
+        26.120000000000001 & 685908.09999999998 \\
+        R & -1430.00 & 6.00 & 7.50 & 8.50 & 9.75 & 11.00 & 13.00 & 15.00 & 18.50
+        & 26.12 & 685908.10 \\
         \hline
     \end{tabular}
 \end{table}
@@ -231,8 +234,10 @@ the same.
         \hhline{~-----} & trip time & intercept & trip time & surcharge &
         intercept \\
         \hline
-        Python & & & & & \\
-        R & & & & & \\
+        Python & 2.02064511e-03   & 1.30134743e+01 &  2.02196225e-03 &
+        3.04104587e-01 & 1.29153642e+01 \\
+        R & 0.00202051 & 13.01345450 & 0.002021825 & 0.303964991 & 12.915390308
+        \\
         \hline
     \end{tabular}
 \end{table}

@@ -6,10 +6,10 @@ library(parallel)
 idxs <- seq(12) # The indices of the files to be analyzed
 path <- "../data"
 size_bulk <- 500000L
-size_cluster <- 4
+size_cluster <- 2
 
 # The serial version
-t_serial <- system.time(list_sum_serial <- lapply(idxs, analyzeFile, path, size_bulk, TRUE))
+#t_serial <- system.time(list_sum_serial <- lapply(idxs, analyzeFile, path, size_bulk, TRUE))
 
 # The parallel version
 cl <- makeCluster(size_cluster)

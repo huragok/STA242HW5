@@ -1,0 +1,10 @@
+n_process = 2
+
+[-1430.0, 6.0, 7.5, 8.5, 9.75, 11.0, 13.0, 15.0, 18.5, 26.120000000000001, 685908.09999999998]
+Linear model of the total amount less the tolls versus trip time:
+[  2.02064511e-03   1.30134743e+01]
+Linear model of the total amount less the tolls versus surcharge and trip time:
+[  2.02196225e-03   3.04104587e-01   1.29153642e+01]
+--- 2036.9713716506958 seconds ---
+
+
