@@ -36,7 +36,7 @@
 \usepackage{subcaption}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage[letterpaper, margin=0.7in]{geometry}
+\usepackage[letterpaper, margin=0.9in]{geometry}
 \lstset{
     %numbers=left,
     stepnumber=1,    
@@ -98,7 +98,7 @@ the $t$ from all records and the second column is an all 1 vector. In the second
 regresssion tasks, the predictors are denoted as $\mathbf{X}_2$, a $n$-by-3
 matrix where the first and the second columns represent the $t$, and $f_s$ from
 all records and the third column is an all 1 vector. Theoretically, the
-coefficients of the linear model can be computed as
+coefficients of the linear model can be computed as~\cite{hastie2009elements}
 \begin{align}
     \bm{\beta}_i =
     (\mathbf{X}_i^H\mathbf{X}_i)^{-1}\mathbf{X}_i^H\mathbf{y},\;i=1,2.
@@ -137,7 +137,7 @@ is
     unzip -cq ../data/trip_fare_n.csv.zip | cut -d , -f 7,10,11
 \end{lstlisting}
 
-According to the data file description~\cite{}, roughly 7.5\% of all
+According to the data file description~\cite{work2014new}, roughly 7.5\% of all
 trips' ``trip\_time'' is wrong so we take a safe approach to extract
 ``pickup\_datetime'' and ``dropoff\_datetime'' from the ``data'' files. The
 corresponding shell command is
@@ -160,8 +160,8 @@ from which the deciles are computed and the 2 linear regression problems are
 solved. 
 
 The worker function \texttt{analyze\_file()} has a coroutine
-structure~\cite{}: it is mainly composed of a ``source'' function
-\texttt{parse\_file()} which read in one line from a pair of data/fare files,
+structure~\cite{beazley2009curious}: it is mainly composed of a ``source''
+function \texttt{parse\_file()} which read in one line from a pair of data/fare files,
 process it, and send the result to a ``sink'' function
 \texttt{accumulate\_lines()}, which is in charge of updating the count of
 occurence table for the total amount less the toll and the sufficient statistics
@@ -207,16 +207,17 @@ We believe that the R implementation is more precise.
 
 \begin{table}[!t]
     \renewcommand{\arraystretch}{1.3}
-    \caption{Deciles of the total fare less the tolls}
+    \caption{Deciles of the total fare less the tolls. Implementation 1, 2 are
+    based on python and R, respectively.}
     \label{tab:decile}
     \centering
     \begin{tabular}{c|ccccccccccc}
         \hline
          & 0 & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1 \\
          \hline
-        Pyhthon & -1430.0 & 6.0 & 7.5 & 8.5 & 9.75 & 11.0 & 13.0 & 15.0 & 18.5 &
+        1 & -1430.0 & 6.0 & 7.5 & 8.5 & 9.75 & 11.0 & 13.0 & 15.0 & 18.5 &
         26.120000000000001 & 685908.09999999998 \\
-        R & -1430.00 & 6.00 & 7.50 & 8.50 & 9.75 & 11.00 & 13.00 & 15.00 & 18.50
+        2 & -1430.00 & 6.00 & 7.50 & 8.50 & 9.75 & 11.00 & 13.00 & 15.00 & 18.50
         & 26.12 & 685908.10 \\
         \hline
     \end{tabular}
@@ -246,17 +247,51 @@ We believe that the R implementation is more precise.
 We test the running time of both of our implementations using different number
 of processes. In there tests, we use a Dell Precision T1700 workstation equipped
 with 16GB DDR3 RAM, a Core i7-4790K CPU and a Samsung 850 PRO SSD in Ubuntu
-14.04 OS. The running time are plotted in Fig.~\ref{fig:running_time}.
+14.04 OS. The elapsed time are plotted in Fig.~\ref{fig:running_time}. Without
+parallel processing, the Python and R implementaions take 3861 and 1231 seconds
+to go through all the 12 pairs of files. With a pool/cluster of size 12, the
+elased times for both implementations reduce to 1144 and 344 seconds,
+corresponding to a maximum speed-up of 3.58 and 3.34, respectively. We note
+that, however, with a pool/cluster of size 6, we can achieve approximately the
+same speed-up.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=2.5in]{figs/TestVelocity.pdf}
-    \caption{The evolution of average velocity of the blue cars.}
-    \label{fig:average_velocity}
+    \includegraphics[width=3.5in]{figs/runningTime.pdf}
+    \caption{The elased time of both implementations vs different sizes of the
+    pool/cluster $N$. The ideal times are computed as $t_{\mbox{ideal}}(N) =
+    t_1/12 \times \lceil12 / N\rceil$, where $t_1$ is the elapsed time when
+    $N = 1$. This equation is based on the assumption that there is no I/O
+    bottleneck, all files take equal amount of time to process, and the time to
+    setup the pool/cluster and combine results returned by multiple worker
+    functions is negligible.}
+    \label{fig:running_time}
 \end{figure}
 
-
-\section{Conclusion}
+\section{Comments}
+Here we make a brief comparison between the two implementations:
+\begin{itemize}
+    \item In terms of performance, our second implementation based on R clearly
+    wins against the first implementation based on Python, although both
+    implementations result in a decent short running time considering we are
+    only using a small form factor workstation.
+    \item In terms of programming time, it turns out that our second
+    implementation takes longer than the first implementation as shown in the
+    commit history. In fact, I start working on implementation 2 first and then
+    implmentation 1. Consequently, the programming time difference is mainly due
+    to the fact that we ecountered some problem playing with the original data
+    when firstly working with implementation 2 and the author is not familiar
+    with R. Since both implementations are based on a similar, highly specific
+    algorithm design, it is expected that in capable hands the programming time
+    would not be so different.
+    \item Despite that our first implementation takes much longer time, it uses
+    very little amount of memory. Should we reduce the bulk size in the second
+    implementation to reduce the memory usage to the amoung of the first
+    implmentation, it is going to run even more slowly. Consequently, if we are
+    on a highly memory-limited platform (which is rarely the case), the first
+    implementation is more appropriate. Otherwise the second implementation will
+    be more appropriate due to its advantage in speed.
+\end{itemize}
 
 
 %   BIBLIOGRAPHY
@@ -270,12 +305,19 @@ with 16GB DDR3 RAM, a Core i7-4790K CPU and a Samsung 850 PRO SSD in Ubuntu
 
 \pagebreak
 \section*{Appendix: Source Files}
-%\subsection*{\texttt{BMLGrid.R}}
-%\lstinputlisting[language=R]{../BMLGrid/R/BMLGrid.R}
-%\subsection*{\texttt{BMLGrid.h}}
-%\lstinputlisting[language=C++]{../BMLGrid/src/BMLGrid.h}
-%\subsection*{\texttt{BMLGrid.cpp}}
-%\lstinputlisting[language=C++]{../BMLGrid/src/BMLGrid.cpp}
+\subsection*{Verify row-by-row matching between
+fare/data files: \textbf{checkmatch.sh}}
+\lstinputlisting[language=sh]{../data/checkmatch.sh}
+\subsection*{Implementation 1: \textbf{implementation1.py}}
+\lstinputlisting[language=Python]{../implementation_1/implementation1.py}
+\subsection*{Implementation 2: \textbf{implementation2.R}}
+\lstinputlisting[language=R]{../implementation_2/implementation2.R}
+\subsection*{Implementation 2: \textbf{NYCTaxi.R}}
+\lstinputlisting[language=R]{../implementation_2/NYCTaxi/R/NYCTaxi.R}
+\subsection*{Implementation 2: \textbf{NYCTaxi.h}}
+\lstinputlisting[language=C++]{../implementation_2/NYCTaxi/src/NYCTaxi.h}
+\subsection*{Implementation 2: \textbf{NYCTaxi.cpp}}
+\lstinputlisting[language=C++]{../implementation_2/NYCTaxi/src/NYCTaxi.cpp}
 
 
 %----------------------------------------------------------------------------------------
