@@ -56,21 +56,24 @@ def accumulate_lines(count_fare, mat_reg1_XX_XY, mat_reg2_XX_XY, idx_file, verbo
             mat_reg1_XX_XY[0, 2] += time_fares[0] * time_fares[1]
             mat_reg1_XX_XY[1, 2] += time_fares[1]
             
-            mat_reg2_XX_XY[0, 0] += time_fares[0] ** 2
             mat_reg2_XX_XY[0, 1] += time_fares[0] * time_fares[2]
-            mat_reg2_XX_XY[0, 2] += time_fares[0]
             mat_reg2_XX_XY[1, 1] += time_fares[2] ** 2
             mat_reg2_XX_XY[1, 2] += time_fares[2]
-            mat_reg2_XX_XY[2, 2] += 1
-            mat_reg2_XX_XY[0, 3] += time_fares[0] * time_fares[1]
             mat_reg2_XX_XY[1, 3] += time_fares[2] * time_fares[1]
-            mat_reg2_XX_XY[2, 3] += time_fares[1]
 
     except GeneratorExit:
-        mat_reg1_XX_XY[1, 0] == mat_reg1_XX_XY[0, 1]
+        mat_reg1_XX_XY[1, 0] = mat_reg1_XX_XY[0, 1]
+        
+        mat_reg2_XX_XY[0, 0] = mat_reg1_XX_XY[0, 0]
+        mat_reg2_XX_XY[0, 2] = mat_reg1_XX_XY[0, 1]
         mat_reg2_XX_XY[1, 0] = mat_reg2_XX_XY[0, 1]
         mat_reg2_XX_XY[2, 0] = mat_reg2_XX_XY[0, 2]
         mat_reg2_XX_XY[2, 1] = mat_reg2_XX_XY[1, 2]
+        mat_reg2_XX_XY[2, 2] = mat_reg1_XX_XY[1, 1]
+        
+        mat_reg2_XX_XY[0, 3] = mat_reg1_XX_XY[0, 2]
+        mat_reg2_XX_XY[2, 3] = mat_reg1_XX_XY[1, 2]
+        
         
         if (verbose):
             print("Processing data/fare {0} completed!".format(idx_file))
